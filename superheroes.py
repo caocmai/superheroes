@@ -23,20 +23,31 @@ class Hero:
         self.armors = []
         self.name = name
         self.starting_health = starting_health
-        self.current_health = 1
+        self.current_health = starting_health
 
     def add_ability(self, ability):
-        self.ability = ability
+        # self.ability = ability
         return self.abilities.append(ability)
 
 
     def attack(self):
+        hits = 1
         for hit in self.abilities:
-            hits += hit
+            hits += hit.attack()
         return hits
-            
-#     def defend(self, incoming_damage):
-#         print("defend")
+
+    def add_armore(self, armor):
+        return self.armors.append(armor)
+
+    def defend(self, damage_amt):
+        blocks = 1
+        for block in self.armors:
+            blocks += block.attack()
+        return blocks
+
+    def take_damage(self, damage):
+        self.current_health -= self.defend(damage)
+
 
 #     def take_damage(self, damage):
 
@@ -50,10 +61,12 @@ class Hero:
 if __name__ == "__main__":
     # If you run this file from the terminal
     # this block is executed.
-    
     ability = Ability("Great Debugging", 50)
     another_ability = Ability("Smarty Pants", 90)
     hero = Hero("Grace Hopper", 200)
     hero.add_ability(ability)
     hero.add_ability(another_ability)
     print(hero.attack())
+
+    # for stuff in hero.abilities:
+    #     print(stuff.attack())
