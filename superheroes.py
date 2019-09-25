@@ -19,54 +19,69 @@ class Armor:
 class Hero:
 
     def __init__(self, name, starting_health=100):
-        self.abilities = []
-        self.armors = []
         self.name = name
         self.starting_health = starting_health
         self.current_health = starting_health
+        self.abilities = []
+        self.armors = []
 
+    # Add Ability object
     def add_ability(self, ability):
         # self.ability = ability
-        return self.abilities.append(ability)
+        self.abilities.append(ability)
 
 
     def attack(self):
-        hits = 1
+        hits = 0
         for hit in self.abilities:
             hits += hit.attack()
         return hits
 
-    def add_armore(self, armor):
-        return self.armors.append(armor)
+    # Add Armor object
+    def add_armor(self, armor):
+        self.armors.append(armor)
 
-    def defend(self, damage_amt):
-        blocks = 1
-        for block in self.armors:
-            blocks += block.attack()
+    # Why need this damage_amt?
+    def defend(self, damage_amt=0):
+        blocks = 0
+        if not len(self.armors) == 0:
+            for block in self.armors:
+                blocks += block.block()
         return blocks
 
     def take_damage(self, damage):
-        self.current_health -= self.defend(damage)
+        total_damage = damage - self.defend(damage)
+        self.current_health -= total_damage
 
+    def is_alive(self):
+        return self.current_health >= 0
 
-#     def take_damage(self, damage):
+    def fight(self, opponent):
+        while self.is_alive() and opponent.is_alive():
+            self.take_damage(opponent.attack())
+            opponent.take_damage(self.attack())
 
-#     def is_alive(self):
-#         print("is alive")
+        print(f"{self.name} current health: {self.current_health}. {opponent.name} current health: {opponent.current_health}")
 
-#     def fight(opponent):
-
-
+        if self.current_health > opponent.current_health:
+            print(f"Hero 1 wins, which is {self.name}")
+        else:
+            print(f"Hero 2 wins, which is {opponent.name}")
 
 if __name__ == "__main__":
     # If you run this file from the terminal
     # this block is executed.
-    ability = Ability("Great Debugging", 50)
-    another_ability = Ability("Smarty Pants", 90)
-    hero = Hero("Grace Hopper", 200)
-    hero.add_ability(ability)
-    hero.add_ability(another_ability)
-    print(hero.attack())
+    hero1 = Hero("Wonder Woman")
+    hero2 = Hero("Dumbledore")
+    ability1 = Ability("Super Speed", 300)
+    ability2 = Ability("Super Eyes", 130)
+    ability3 = Ability("Wizard Wand", 80)
+    ability4 = Ability("Wizard Beard", 20)
+    hero1.add_ability(ability1)
+    hero1.add_ability(ability2)
+    hero2.add_ability(ability3)
+    hero2.add_ability(ability4)
+    hero1.fight(hero2)
 
     # for stuff in hero.abilities:
     #     print(stuff.attack())
