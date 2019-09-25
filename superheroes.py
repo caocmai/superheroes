@@ -8,9 +8,11 @@ class Ability:
     def attack(self):
         return random.randint(0, self.attack_strength)
 
+
 class Weapon(Ability):
     def attack(self):
         return random.randint(self.attack // 2, self.attack_strength)
+
 
 class Armor:
     def __init__(self, name, max_block):
@@ -19,6 +21,7 @@ class Armor:
     
     def block(self):
         return random.randint(0, self.max_block)
+
 
 class Hero:
 
@@ -83,6 +86,7 @@ class Hero:
             opponent.add_kill(1)
             print(f"{opponent.name} is the winner")
 
+
 class Team():
 
     def __init__(self, name):
@@ -104,9 +108,27 @@ class Team():
 
     def attack(self, other_team):
         for hero in self.heroes:
-            if hero.is_alive():
-                print('you')
-            print(hero.name)
+            if not hero.is_alive():
+                self.heroes.pop(hero)
+        
+        for villian in other_team.heroes:
+            if not villian.is_alive():
+                other_team.heroes.pop(hero)
+
+        while len(self.heroes) or len(other_team.heroes) > 0:
+            one_alive_hero = random.choice(self.heroes)
+            one_alive_villian = random.choice(other_team.heroes)
+
+            one_alive_hero.fight(one_alive_villian)
+
+        
+    def stats(self):
+        for hero in self.heroes:
+            print("Kill/Death:")
+            try:
+                print(hero.kills/hero.deaths)
+            except ZeroDivisionError:
+                return 0
 
     def revive_heroes(self, health=100):
         for hero in self.heroes:
@@ -116,31 +138,31 @@ class Team():
 awesome = Team("awesome")
 awesome.add_hero('hero 1')
 awesome.add_hero('hero 2')
-# print(awesome.heroes)
 awesome.attack("you")
+awesome.stats()
 
 # if __name__ == "__main__":
 #     # If you run this file from the terminal
 #     # this block is executed.
 
 #     hero1 = Hero("Wonder Woman")
-    # hero2 = Hero("Dumbledore")
+#     hero2 = Hero("Dumbledore")
 
-    # ability1 = Ability("Super Speed", 300)
-    # ability2 = Ability("Super Eyes", 130)
-    # ability3 = Ability("Wizard Wand", 80)
-    # ability4 = Ability("Wizard Beard", 20)
+#     ability1 = Ability("Super Speed", 300)
+#     ability2 = Ability("Super Eyes", 130)
+#     ability3 = Ability("Wizard Wand", 80)
+#     ability4 = Ability("Wizard Beard", 20)
 
-    # hero1.add_ability(ability1)
-    # hero1.add_ability(ability2)
+#     hero1.add_ability(ability1)
+#     hero1.add_ability(ability2)
 
-    # hero2.add_ability(ability3)
-    # hero2.add_ability(ability4)
+#     hero2.add_ability(ability3)
+#     hero2.add_ability(ability4)
 
 
-    # hero1.fight(hero2)
+#     hero1.fight(hero2)
 
-    # print(hero1.kills)
-    # print(hero1.deaths)
-    # print(hero2.kills)
-    # print(hero2.deaths)
+#     print(hero1.kills)
+#     print(hero1.deaths)
+#     print(hero2.kills)
+#     print(hero2.deaths)
