@@ -8,6 +8,10 @@ class Ability:
     def attack(self):
         return random.randint(0, self.attack_strength)
 
+class Weapon(Ability):
+    def attack(self):
+        return random.randint(self.attack // 2, self.attack_strength)
+
 class Armor:
     def __init__(self, name, max_block):
         self.name = name
@@ -24,12 +28,19 @@ class Hero:
         self.current_health = starting_health
         self.abilities = []
         self.armors = []
+        self.deaths = 0
+        self.kills = 0
+
+    def add_kill(self, num_kills):
+        self.kills = num_kills
+
+    def add_deaths(self, num_deaths):
+        self.deaths = num_deaths
 
     # Add Ability object
     def add_ability(self, ability):
         # self.ability = ability
-        self.abilities.append(ability)
-
+        self.abilities.append(ability) 
 
     def attack(self):
         hits = 0
@@ -41,8 +52,8 @@ class Hero:
     def add_armor(self, armor):
         self.armors.append(armor)
 
-    # Why need this damage_amt?
-    def defend(self, damage_amt=0):
+    # Why need the damage_amt? Not added in this method
+    def defend(self):
         blocks = 0
         if not len(self.armors) == 0:
             for block in self.armors:
@@ -50,7 +61,7 @@ class Hero:
         return blocks
 
     def take_damage(self, damage):
-        total_damage = damage - self.defend(damage)
+        total_damage = damage - self.defend()
         self.current_health -= total_damage
 
     def is_alive(self):
@@ -64,24 +75,72 @@ class Hero:
         print(f"{self.name} current health: {self.current_health}. {opponent.name} current health: {opponent.current_health}")
 
         if self.current_health > opponent.current_health:
-            print(f"Hero 1 wins, which is {self.name}")
+            opponent.add_deaths(1)
+            self.add_kill(1)
+            print(f"{self.name} is the winner")
         else:
-            print(f"Hero 2 wins, which is {opponent.name}")
+            self.add_deaths(1)
+            opponent.add_kill(1)
+            print(f"{opponent.name} is the winner")
 
-if __name__ == "__main__":
-    # If you run this file from the terminal
-    # this block is executed.
-    hero1 = Hero("Wonder Woman")
-    hero2 = Hero("Dumbledore")
-    ability1 = Ability("Super Speed", 300)
-    ability2 = Ability("Super Eyes", 130)
-    ability3 = Ability("Wizard Wand", 80)
-    ability4 = Ability("Wizard Beard", 20)
-    hero1.add_ability(ability1)
-    hero1.add_ability(ability2)
-    hero2.add_ability(ability3)
-    hero2.add_ability(ability4)
-    hero1.fight(hero2)
+class Team():
 
-    # for stuff in hero.abilities:
-    #     print(stuff.attack())
+    def __init__(self, name):
+        self.name = name
+        self.heroes = []
+
+    def remove_hero(self, name):
+        for hero in self.heroes:
+            if hero.name == name:
+                self.heroes.remove(hero)
+        return 0
+
+    def view_all_heroes(self):
+        for hero in self.heroes:
+            print(hero.name)
+
+    def add_hero(self, hero):
+        self.heroes.append(Hero(hero))
+
+    def attack(self, other_team):
+        for hero in self.heroes:
+            if hero.is_alive():
+                print('you')
+            print(hero.name)
+
+    def revive_heroes(self, health=100):
+        for hero in self.heroes:
+            hero.current_health = hero.starting_health
+
+
+awesome = Team("awesome")
+awesome.add_hero('hero 1')
+awesome.add_hero('hero 2')
+# print(awesome.heroes)
+awesome.attack("you")
+
+# if __name__ == "__main__":
+#     # If you run this file from the terminal
+#     # this block is executed.
+
+#     hero1 = Hero("Wonder Woman")
+    # hero2 = Hero("Dumbledore")
+
+    # ability1 = Ability("Super Speed", 300)
+    # ability2 = Ability("Super Eyes", 130)
+    # ability3 = Ability("Wizard Wand", 80)
+    # ability4 = Ability("Wizard Beard", 20)
+
+    # hero1.add_ability(ability1)
+    # hero1.add_ability(ability2)
+
+    # hero2.add_ability(ability3)
+    # hero2.add_ability(ability4)
+
+
+    # hero1.fight(hero2)
+
+    # print(hero1.kills)
+    # print(hero1.deaths)
+    # print(hero2.kills)
+    # print(hero2.deaths)
