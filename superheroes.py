@@ -34,6 +34,12 @@ class Hero:
         self.deaths = 0
         self.kills = 0
 
+    def add_weapon(self, weapon):
+        self.abilities.append(weapon)
+
+    def add_armor(self, armor):
+        self.abilities.append(armor)
+
     def add_kill(self, num_kills):
         self.kills = num_kills
 
@@ -104,18 +110,20 @@ class Team():
             print(hero.name)
 
     def add_hero(self, hero):
-        self.heroes.append(Hero(hero))
+        self.heroes.append(hero)
 
     def attack(self, other_team):
-        for hero in self.heroes:
-            if not hero.is_alive():
-                self.heroes.pop(hero)
-        
-        for villian in other_team.heroes:
-            if not villian.is_alive():
-                other_team.heroes.pop(hero)
 
-        while len(self.heroes) or len(other_team.heroes) > 0:
+        # Why does this not work!!!
+        # while len(self.heroes) > 0 and len(other_team.heroes) > 0:
+        #     for hero in self.heroes:
+        #         if not hero.is_alive():
+        #             self.heroes.remove(hero)
+
+        #     for villian in other_team.heroes:
+        #         if not villian.is_alive():
+        #             other_team.heroes.remove(villian)
+                
             one_alive_hero = random.choice(self.heroes)
             one_alive_villian = random.choice(other_team.heroes)
 
@@ -135,11 +143,11 @@ class Team():
             hero.current_health = hero.starting_health
 
 
-awesome = Team("awesome")
-awesome.add_hero('hero 1')
-awesome.add_hero('hero 2')
-awesome.attack("you")
-awesome.stats()
+# awesome = Team("awesome")
+# awesome.add_hero('hero 1')
+# awesome.add_hero('hero 2')
+# awesome.attack("you")
+# awesome.stats()
 
 # if __name__ == "__main__":
 #     # If you run this file from the terminal
