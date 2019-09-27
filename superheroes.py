@@ -22,6 +22,77 @@ class Armor:
     def block(self):
         return random.randint(0, self.max_block)
 
+class Arena:
+    def __init__(self):
+        self.team_one = None
+        self.team_two = None
+
+    def create_ability(self):
+        ability_name = input("Enter ability name: ")
+        ability_attack_strength = input("Enter max strength for ability: ")
+        return Ability(ability_name, int(ability_attack_strength))
+
+    def create_weapon(self):
+        weapon_name = input("Enter weapon name: ")
+        weapon_strength = input("Enter weapon strength: ")
+        return Weapon(weapon_name, int(weapon_strength))
+
+    def create_armor(self):
+        armor_name = input("Enter armor name: ")
+        armor_strength = input("Enter armor strength: ")
+        return Armor(armor_name, int(armor_strength))
+
+    def create_hero(self):
+        name = input("Give your hero a name: ")
+        health = int(input("Enter the starting health of your hero: "))
+        hero = Hero(name, health)
+
+        running = True
+        while running:
+            user_choice = input("To add ability type 'a'. To add armor type 'r'. To add new weapon type 'w'. Once finished type 'q'. ")
+
+            if user_choice == 'a':
+                new_ability = self.create_ability()
+                hero.add_ability(new_ability)
+
+            if user_choice == 'r':
+                new_armor = self.create_armor()
+                hero.add_armor(new_armor)
+
+            if user_choice == 'w':
+                new_weapon = self.create_weapon()
+                hero.add_weapon(new_weapon)
+
+            if user_choice == 'q':
+                running = False
+
+        return hero
+
+    def build_team_one(self):
+        user_choice = int(input("Enter number of heroes to add to Team One: "))
+
+        for i in range(user_choice, 0, -1):
+            placement = user_choice - (i - 1)
+            print(f"For hero {placement} add the hero name and abilities.")
+            new_hero = self.create_hero()
+            self.team_one.add_hero(new_hero)
+
+    def build_team_two(self):
+        user_choice = int(input("Enter number of heroes to add to Team Two: "))
+
+        for i in range(user_choice, 0, -1):
+            placement = user_choice - (i - 1)
+            print(f"For hero {placement} add the hero name and abilities.")
+            new_hero = self.create_hero()
+            self.team_two.add_hero(new_hero)
+
+
+    def team_battle(self):
+        self.team_one.attack(self.team_two)
+
+    def show_stats(self):
+        self.team_one.stats()
+        self.team_two.stats()
 
 class Hero:
 
@@ -37,8 +108,12 @@ class Hero:
     def add_weapon(self, weapon):
         self.abilities.append(weapon)
 
+    # def add_armor(self, armor):
+    #     self.abilities.append(armor)
+
+    # Add Armor object
     def add_armor(self, armor):
-        self.abilities.append(armor)
+        self.armors.append(armor)
 
     def add_kill(self, num_kills):
         self.kills = num_kills
@@ -56,10 +131,6 @@ class Hero:
         for hit in self.abilities:
             hits += hit.attack()
         return hits
-
-    # Add Armor object
-    def add_armor(self, armor):
-        self.armors.append(armor)
 
     # Why need the damage_amt? Not added in this method
     def defend(self):
