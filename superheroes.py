@@ -94,6 +94,25 @@ class Arena:
         self.team_one.stats()
         self.team_two.stats()
 
+        alive_heros_team_one = []
+        alive_heros_team_two = []
+        
+        for hero in self.team_one.heroes:
+            if hero.is_alive():
+                alive_heros_team_one.append(hero.name)
+
+        for hero in self.team_two.heroes:
+            if hero.is_alive():
+                alive_heros_team_two.append(hero.name)
+
+        print(f"These are the current alive heros on Team One: {alive_heros_team_one}")
+        print(f"These are the current alive heros on Team Two: {alive_heros_team_two}") 
+
+        if alive_heros_team_one == 0:
+            print("Team Two won!")
+        if alive_heros_team_two == 0:
+            print("Team One won!")
+
 class Hero:
 
     def __init__(self, name, starting_health=100):
@@ -203,11 +222,18 @@ class Team():
         
     def stats(self):
         for hero in self.heroes:
-            print("Kill/Death:")
-            try:
-                print(hero.kills/hero.deaths)
-            except ZeroDivisionError:
-                return 0
+            if hero.deaths > 0:
+                kill_ratio = hero.kills // hero.deaths
+                print(f"{hero.name} hero kill ratio is {kill_ratio}")
+            else:
+                print(f"{hero.name} hero kill ratio is {hero.kills}")
+
+
+            # print("Kill/Death:")
+            # try:
+            #     print(hero.kills/hero.deaths)
+            # except ZeroDivisionError:
+            #     return 0
 
     def revive_heroes(self, health=100):
         for hero in self.heroes:
