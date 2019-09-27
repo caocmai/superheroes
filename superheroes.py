@@ -22,97 +22,6 @@ class Armor:
     def block(self):
         return random.randint(0, self.max_block)
 
-class Arena:
-    def __init__(self):
-        self.team_one = None
-        self.team_two = None
-
-    def create_ability(self):
-        ability_name = input("Enter ability name: ")
-        ability_attack_strength = input("Enter max strength for ability: ")
-        return Ability(ability_name, int(ability_attack_strength))
-
-    def create_weapon(self):
-        weapon_name = input("Enter weapon name: ")
-        weapon_strength = input("Enter weapon strength: ")
-        return Weapon(weapon_name, int(weapon_strength))
-
-    def create_armor(self):
-        armor_name = input("Enter armor name: ")
-        armor_strength = input("Enter armor strength: ")
-        return Armor(armor_name, int(armor_strength))
-
-    def create_hero(self):
-        name = input("Give your hero a name: ")
-        health = int(input("Enter the starting health of your hero: "))
-        hero = Hero(name, health)
-
-        running = True
-        while running:
-            user_choice = input("To add ability type 'a'. To add armor type 'r'. To add new weapon type 'w'. Once finished type 'q'. ")
-
-            if user_choice == 'a':
-                new_ability = self.create_ability()
-                hero.add_ability(new_ability)
-
-            if user_choice == 'r':
-                new_armor = self.create_armor()
-                hero.add_armor(new_armor)
-
-            if user_choice == 'w':
-                new_weapon = self.create_weapon()
-                hero.add_weapon(new_weapon)
-
-            if user_choice == 'q':
-                running = False
-
-        return hero
-
-    def build_team_one(self):
-        user_choice = int(input("Enter number of heroes to add to Team One: "))
-
-        for i in range(user_choice, 0, -1):
-            placement = user_choice - (i - 1)
-            print(f"For hero {placement} add the hero name and abilities.")
-            new_hero = self.create_hero()
-            self.team_one.add_hero(new_hero)
-
-    def build_team_two(self):
-        user_choice = int(input("Enter number of heroes to add to Team Two: "))
-
-        for i in range(user_choice, 0, -1):
-            placement = user_choice - (i - 1)
-            print(f"For hero {placement} add the hero name and abilities.")
-            new_hero = self.create_hero()
-            self.team_two.add_hero(new_hero)
-
-
-    def team_battle(self):
-        self.team_one.attack(self.team_two)
-
-    def show_stats(self):
-        self.team_one.stats()
-        self.team_two.stats()
-
-        alive_heros_team_one = []
-        alive_heros_team_two = []
-        
-        for hero in self.team_one.heroes:
-            if hero.is_alive():
-                alive_heros_team_one.append(hero.name)
-
-        for hero in self.team_two.heroes:
-            if hero.is_alive():
-                alive_heros_team_two.append(hero.name)
-
-        print(f"These are the current alive heros on Team One: {alive_heros_team_one}")
-        print(f"These are the current alive heros on Team Two: {alive_heros_team_two}") 
-
-        if alive_heros_team_one == 0:
-            print("Team Two won!")
-        if alive_heros_team_two == 0:
-            print("Team One won!")
-
 class Hero:
 
     def __init__(self, name, starting_health=100):
@@ -202,6 +111,12 @@ class Team():
     def add_hero(self, hero):
         self.heroes.append(hero)
 
+    def is_hero_alive(self):
+        for hero in self.heroes:
+            if hero.is_alive():
+                return True
+        return False
+
     def attack(self, other_team):
 
         # Why does this not work!!!
@@ -213,7 +128,7 @@ class Team():
         #     for villian in other_team.heroes:
         #         if not villian.is_alive():
         #             other_team.heroes.remove(villian)
-                
+        while self.is_hero_alive() and other_team.is_hero_alive():
             one_alive_hero = random.choice(self.heroes)
             one_alive_villian = random.choice(other_team.heroes)
 
@@ -240,15 +155,115 @@ class Team():
             hero.current_health = hero.starting_health
 
 
+class Arena:
+    def __init__(self):
+        self.team_one = None
+        self.team_two = None
+
+    def create_ability(self):
+        ability_name = input("Enter ability name: ")
+        ability_attack_strength = input("Enter max strength for ability: ")
+        return Ability(ability_name, int(ability_attack_strength))
+
+    def create_weapon(self):
+        weapon_name = input("Enter weapon name: ")
+        weapon_strength = input("Enter weapon strength: ")
+        return Weapon(weapon_name, int(weapon_strength))
+
+    def create_armor(self):
+        armor_name = input("Enter armor name: ")
+        armor_strength = input("Enter armor strength: ")
+        return Armor(armor_name, int(armor_strength))
+
+    def create_hero(self):
+        name = input("Give your hero a name: ")
+        health = int(input("Enter the starting health of your hero: "))
+        hero = Hero(name, health)
+
+        running = True
+        while running:
+            user_choice = input("To add ability type 'a'. To add armor type 'r'. To add new weapon type 'w'. Once finished type 'q'. ")
+
+            if user_choice == 'a':
+                new_ability = self.create_ability()
+                hero.add_ability(new_ability)
+
+            if user_choice == 'r':
+                new_armor = self.create_armor()
+                hero.add_armor(new_armor)
+
+            if user_choice == 'w':
+                new_weapon = self.create_weapon()
+                hero.add_weapon(new_weapon)
+
+            if user_choice == 'q':
+                running = False
+
+        return hero
+
+    def build_team_one(self):
+        team_name = input("Enter Team One name: ")
+        self.team_one = Team(team_name)
+        user_choice = int(input("Enter number of heroes to add to Team One: "))
+
+        for i in range(user_choice, 0, -1):
+            placement = user_choice - (i - 1)
+            print(f"For Team One of hero {placement}, add the hero name and abilities.")
+            new_hero = self.create_hero()
+            self.team_one.add_hero(new_hero)
+
+    def build_team_two(self):
+        team_name = input("Enter Team Two name: ")
+        self.team_two = Team(team_name)
+        user_choice = int(input("Enter number of heroes to add to Team Two: "))
+
+        for i in range(user_choice, 0, -1):
+            placement = user_choice - (i - 1) # Just so print out to user makes sense numerically
+            print(f"For Team Two of hero {placement}, add the hero name and abilities.")
+            new_hero = self.create_hero()
+            self.team_two.add_hero(new_hero)
+
+
+    def team_battle(self):
+        self.team_one.attack(self.team_two)
+
+    def show_stats(self):
+        self.team_one.stats()
+        self.team_two.stats()
+
+        alive_heros_team_one = []
+        alive_heros_team_two = []
+        
+        for hero in self.team_one.heroes:
+            if hero.is_alive():
+                alive_heros_team_one.append(hero.name)
+
+        for hero in self.team_two.heroes:
+            if hero.is_alive():
+                alive_heros_team_two.append(hero.name)
+
+        print(f"These are the current alive heros on Team One: {alive_heros_team_one}")
+        print(f"These are the current alive heros on Team Two: {alive_heros_team_two}") 
+
+        if len(alive_heros_team_one) == 0:
+            print("Team Two won!")
+        if len(alive_heros_team_two) == 0:
+            print("Team One won!")
+
 # awesome = Team("awesome")
 # awesome.add_hero('hero 1')
 # awesome.add_hero('hero 2')
 # awesome.attack("you")
 # awesome.stats()
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 #     # If you run this file from the terminal
 #     # this block is executed.
+    arena = Arena()
+    arena.build_team_one()
+    arena.build_team_two()
+    arena.team_battle()
+    arena.show_stats()
 
 #     hero1 = Hero("Wonder Woman")
 #     hero2 = Hero("Dumbledore")
