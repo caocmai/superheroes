@@ -104,50 +104,45 @@ class Hero:
 
 
 class Team():
-
+    # Initizalizes Team class
     def __init__(self, name):
         self.name = name
+        # To add objects of Hero class
         self.heroes = []
 
+    # Removes a hero with passed in hero
     def remove_hero(self, name):
         for hero in self.heroes:
             if hero.name == name:
                 self.heroes.remove(hero)
         return False
 
+    # Can use the .name from the Hero class because passing in Hero object
     def view_all_heroes(self):
         for hero in self.heroes:
             print(hero.name)
-
+    
+    # To add heros object from Hero class
     def add_hero(self, hero):
         self.heroes.append(hero)
 
     def is_hero_alive(self):
+        # Looping to make sure at least one alive hero-object in heroes list
         for hero in self.heroes:
+            # Can use is_alive becuase of again, passing in Hero class objects
             if hero.is_alive():
                 return True
         return False
 
     def attack(self, other_team):
-
-        # Why does this not work!!!
-        # while len(self.heroes) > 0 and len(other_team.heroes) > 0:
-
+        # If at least one alive hero in self and other team, then fight
         while self.is_hero_alive() and other_team.is_hero_alive():
-            # for hero in self.heroes:
-            #     if not hero.is_alive():
-            #         self.heroes.remove(hero)
-
-            # for villian in other_team.heroes:
-            #     if not villian.is_alive():
-            #         other_team.heroes.remove(villian)
-
             one_alive_hero = random.choice(self.heroes)
             one_alive_villian = random.choice(other_team.heroes)
 
             one_alive_hero.fight(one_alive_villian)
 
-        
+    # Printing out the stats of kill/deaths ratio
     def stats(self):
         for hero in self.heroes:
             if hero.deaths > 0:
@@ -163,6 +158,7 @@ class Team():
             # except ZeroDivisionError:
             #     return 0
 
+    # To revive all heros in the list of heros
     def revive_heroes(self, health=100):
         for hero in self.heroes:
             hero.current_health = hero.starting_health
@@ -244,7 +240,7 @@ class Arena:
                 break
 
         for i in range(user_choice, 0, -1):
-            placement = user_choice - (i - 1) # Just so print out to user makes sense numerically
+            placement = user_choice - (i - 1) # Just so print out to user that makes sense numerically
             print(f"For Team Two of hero {placement}, add the hero name and abilities.")
             new_hero = self.create_hero()
             self.team_two.add_hero(new_hero)
