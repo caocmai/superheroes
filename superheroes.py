@@ -46,7 +46,7 @@ class Hero:
         self.armors.append(armor)
 
     # Setter add number of kills
-    def add_kill(self, num_kills):
+    def add_kills(self, num_kills):
         self.kills += num_kills
 
     # This is a setter add number of deaths
@@ -95,12 +95,17 @@ class Hero:
 
             if self.is_alive() and not opponent.is_alive():
                 opponent.add_deaths(1)
-                self.add_kill(1)
+                self.add_kills(1)
                 print(f"{self.name} is the winner")
             elif not self.is_alive() and opponent.is_alive():
                 self.add_deaths(1)
-                opponent.add_kill(1)
+                opponent.add_kills(1)
                 print(f"{opponent.name} is the winner")
+            elif not self.is_alive() and not opponent.is_alive():
+                continue
+                # print("Both died")
+                # self.add_deaths(1)
+                # opponent.add_deaths(1)
 
 
 class Team():
@@ -142,33 +147,38 @@ class Team():
         while self.is_hero_alive() and other_team.is_hero_alive():
             one_alive_hero = random.choice(self.heroes)
             one_alive_villian = random.choice(other_team.heroes)
-            print(f"Hero {one_alive_hero.name} is fighting hero {one_alive_villian.name}")
+
+            if not one_alive_hero.is_alive() or not one_alive_villian.is_alive():
+                continue
+
+            print(f"Hero: {one_alive_hero.name} is fighting hero: {one_alive_villian.name}")
             one_alive_hero.fight(one_alive_villian)
 
+            alive_heros_team_one = []
+            alive_heros_team_two = []
+
             for hero in self.heroes:
-              print("hero name: " + str(hero.name))
-              print("hero heath: " + str(hero.current_health))
-              if hero.current_health < 0:
-                self.heroes.remove(hero)
+            #   print("hero name: " + str(hero.name))
+            #   print("hero heath: " + str(hero.current_health))
+              if hero.current_health > 0:
+                alive_heros_team_one.append(hero.name)
 
             for hero in other_team.heroes:
-              print("other team hero name:  " + str(hero.name))
-              print("other team hero healt: " + str(hero.current_health))
-              if hero.current_health < 0:
-                other_team.heroes.remove(hero)
+            #   print("other team hero name:  " + str(hero.name))
+            #   print("other team hero healt: " + str(hero.current_health))
+              if hero.current_health > 0:
+                alive_heros_team_two.append(hero.name)
 
-            print("home alive hero: ")
-            self.view_all_heroes()
-            print("other alive heroes: ")
-            other_team.view_all_heroes()
-            print("-----------")
+            print(f"Team One {self.name} current alive heros: ")
+            print(alive_heros_team_one)
+            print(f"Team Two {other_team.name} current alive heroes: ")
+            print(alive_heros_team_two)
+            print("---------------------------------------")
 
-        if len(self.heroes) == 0:
-            print(f"{self.name} Team one wins")
-        elif len(other_team.heroes) == 0:
-            print(f"{other_team.name} Team 2 wins")
-
-
+            if len(alive_heros_team_one) == 0:
+                print(f"{other_team.name} Team Two wins")
+            elif len(alive_heros_team_two) == 0:
+                print(f"{self.name} Team One wins")
 
     # Printing out the stats of kill/deaths ratio
     def stats(self):
@@ -222,7 +232,16 @@ class Arena:
     # Create hero along with armors, abilities, and weapons
     def create_hero(self):
         name = input("Give your hero a name: ")
-        health = input("Enter the starting health of your hero: ")
+
+        while True:
+            try:
+                health = int(input("Enter the starting health of your hero: "))
+            except ValueError:
+                continue
+            else:
+                break
+
+        # health = input("Enter the starting health of your hero: ")
         hero = Hero(name, int(health))
 
         running = True
@@ -252,7 +271,7 @@ class Arena:
 
         while True:
             try:
-                user_choice = int(input("Enter number of heroes to add to Team One: "))
+                user_choice = int(input(f"Enter number of heroes to add to Team {self.team_one.name}: "))
             except ValueError:
                 continue
             else:
@@ -263,7 +282,7 @@ class Arena:
             print(f"For Team One named: {self.team_one.name} of hero {placement}, add the hero's name and abilities.")
             new_hero = self.create_hero()
             self.team_one.add_hero(new_hero)
-            print("-------------------")
+            print("------------------------------------------")
 
     def build_team_two(self):
         team_name = input("Enter Team Two name: ")
@@ -271,7 +290,7 @@ class Arena:
 
         while True:
             try:
-                user_choice = int(input("Enter number of heroes to add to Team Two: "))
+                user_choice = int(input(f"Enter number of heroes to add to Team {self.team_two.name}: "))
             except ValueError:
                 continue
             else:
@@ -282,10 +301,10 @@ class Arena:
             print(f"For Team Two named: {self.team_two.name} of hero {placement}, add the hero's name and abilities.")
             new_hero = self.create_hero()
             self.team_two.add_hero(new_hero)
-            print("-----------------")
+            print("------------------------------------------")
 
 
-    def team_battle(self):
+    def team_battle(self): 
         self.team_one.attack(self.team_two)
 
     def show_stats(self):
