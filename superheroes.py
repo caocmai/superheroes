@@ -142,10 +142,32 @@ class Team():
         while self.is_hero_alive() and other_team.is_hero_alive():
             one_alive_hero = random.choice(self.heroes)
             one_alive_villian = random.choice(other_team.heroes)
-
-
-
+            print(f"Hero {one_alive_hero.name} is fighting hero {one_alive_villian.name}")
             one_alive_hero.fight(one_alive_villian)
+
+            for hero in self.heroes:
+              print("hero name: " + str(hero.name))
+              print("hero heath: " + str(hero.current_health))
+              if hero.current_health < 0:
+                self.heroes.remove(hero)
+
+            for hero in other_team.heroes:
+              print("other team hero name:  " + str(hero.name))
+              print("other team hero healt: " + str(hero.current_health))
+              if hero.current_health < 0:
+                other_team.heroes.remove(hero)
+
+            print("home alive hero: ")
+            self.view_all_heroes()
+            print("other alive heroes: ")
+            other_team.view_all_heroes()
+            print("-----------")
+
+        if len(self.heroes) == 0:
+            print(f"{self.name} Team one wins")
+        elif len(other_team.heroes) == 0:
+            print(f"{other_team.name} Team 2 wins")
+
 
 
     # Printing out the stats of kill/deaths ratio
@@ -238,7 +260,7 @@ class Arena:
 
         for i in range(user_choice, 0, -1):
             placement = user_choice - (i - 1)
-            print(f"For Team One of hero {placement}, add the hero's name and abilities.")
+            print(f"For Team One named: {self.team_one.name} of hero {placement}, add the hero's name and abilities.")
             new_hero = self.create_hero()
             self.team_one.add_hero(new_hero)
             print("-------------------")
@@ -257,7 +279,7 @@ class Arena:
 
         for i in range(user_choice, 0, -1):
             placement = user_choice - (i - 1) # Just so print out to user that makes sense numerically
-            print(f"For Team Two of hero {placement}, add the hero's name and abilities.")
+            print(f"For Team Two named: {self.team_two.name} of hero {placement}, add the hero's name and abilities.")
             new_hero = self.create_hero()
             self.team_two.add_hero(new_hero)
             print("-----------------")
@@ -270,24 +292,24 @@ class Arena:
         self.team_one.stats()
         self.team_two.stats()
 
-        alive_heros_team_one = []
-        alive_heros_team_two = []
+        # alive_heros_team_one = []
+        # alive_heros_team_two = []
         
-        for hero in self.team_one.heroes:
-            if hero.is_alive():
-                alive_heros_team_one.append(hero.name)
+        # for hero in self.team_one.heroes:
+        #     if hero.is_alive():
+        #         alive_heros_team_one.append(hero.name)
 
-        for hero in self.team_two.heroes:
-            if hero.is_alive():
-                alive_heros_team_two.append(hero.name)
+        # for hero in self.team_two.heroes:
+        #     if hero.is_alive():
+        #         alive_heros_team_two.append(hero.name)
 
-        print(f"These are the current alive heros on Team One: {alive_heros_team_one}")
-        print(f"These are the current alive heros on Team Two: {alive_heros_team_two}") 
+        # print(f"These are the current alive heros on Team One: {alive_heros_team_one}")
+        # print(f"These are the current alive heros on Team Two: {alive_heros_team_two}") 
 
-        if len(alive_heros_team_one) == 0:
-            print("Team Two won!")
-        if len(alive_heros_team_two) == 0:
-            print("Team One won!")
+        # if len(alive_heros_team_one) == 0:
+        #     print("Team Two won!")
+        # if len(alive_heros_team_two) == 0:
+        #     print("Team One won!")
 
 # awesome = Team("awesome")
 # awesome.add_hero('hero 1')
