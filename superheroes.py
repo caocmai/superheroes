@@ -53,7 +53,7 @@ class Hero:
     def add_deaths(self, num_deaths):
         self.deaths += num_deaths
 
-    # Add Ability object. This is a setter
+    # Add Ability object from Ability class. This is a setter
     def add_ability(self, ability):
         # self.ability = ability
         self.abilities.append(ability) 
@@ -83,7 +83,7 @@ class Hero:
 
     # Returns True if current_health is greater than 0, and reverse if less than 0
     def is_alive(self):
-        return self.current_health >= 0
+        return self.current_health > 0
 
     # Method to determine who wins when fighting each other
     def fight(self, opponent):
@@ -91,7 +91,7 @@ class Hero:
             self.take_damage(opponent.attack())
             opponent.take_damage(self.attack())
 
-            print(f"{self.name} current health: {self.current_health}. {opponent.name} current health: {opponent.current_health}")
+            # print(f"{self.name} current health: {self.current_health}. {opponent.name} current health: {opponent.current_health}")
 
             if self.is_alive() and not opponent.is_alive():
                 opponent.add_deaths(1)
@@ -111,6 +111,8 @@ class Team():
         self.heroes = []
 
     # Removes a hero with passed in hero
+    # hero.name refers tot he Hero class name not Team class name
+    # because objects in heroes list are from Hero class
     def remove_hero(self, name):
         for hero in self.heroes:
             if hero.name == name:
@@ -126,6 +128,7 @@ class Team():
     def add_hero(self, hero):
         self.heroes.append(hero)
 
+    # Check to make sure at least one alive hero in heroes list
     def is_hero_alive(self):
         # Looping to make sure at least one alive hero-object in heroes list
         for hero in self.heroes:
@@ -140,16 +143,19 @@ class Team():
             one_alive_hero = random.choice(self.heroes)
             one_alive_villian = random.choice(other_team.heroes)
 
+
+
             one_alive_hero.fight(one_alive_villian)
+
 
     # Printing out the stats of kill/deaths ratio
     def stats(self):
         for hero in self.heroes:
             if hero.deaths > 0:
                 kill_ratio = hero.kills // hero.deaths
-                print(f"{hero.name}  kill ratio is {kill_ratio}")
+                print(f"{hero.name} kill ratio is {kill_ratio}")
             else:
-                print(f"{hero.name} hero kill ratio is {hero.kills}")
+                print(f"{hero.name} kill ratio is {hero.kills}")
 
 
             # print("Kill/Death:")
@@ -165,25 +171,33 @@ class Team():
 
 
 class Arena:
+
+    # Initializes Arena class to have two teams
     def __init__(self):
         self.team_one = None
         self.team_two = None
 
+    # To create ability and return the entire Ability class
+    # And Ability class returns a random attack value when called
     def create_ability(self):
         ability_name = input("Enter ability name: ")
         ability_attack_strength = input("Enter max strength for ability: ")
         return Ability(ability_name, int(ability_attack_strength))
 
+    # To create weapon and return the Weapon class
+    # Not calling it just creating
     def create_weapon(self):
         weapon_name = input("Enter weapon name: ")
         weapon_strength = input("Enter weapon strength: ")
         return Weapon(weapon_name, int(weapon_strength))
 
+    # To create armor and return the Armor class
     def create_armor(self):
         armor_name = input("Enter armor name: ")
         armor_strength = input("Enter armor strength: ")
         return Armor(armor_name, int(armor_strength))
 
+    # Create hero along with armors, abilities, and weapons
     def create_hero(self):
         name = input("Give your hero a name: ")
         health = input("Enter the starting health of your hero: ")
@@ -213,6 +227,7 @@ class Arena:
     def build_team_one(self):
         team_name = input("Enter Team One name: ")
         self.team_one = Team(team_name)
+
         while True:
             try:
                 user_choice = int(input("Enter number of heroes to add to Team One: "))
@@ -223,7 +238,7 @@ class Arena:
 
         for i in range(user_choice, 0, -1):
             placement = user_choice - (i - 1)
-            print(f"For Team One of hero {placement}, add the hero name and abilities.")
+            print(f"For Team One of hero {placement}, add the hero's name and abilities.")
             new_hero = self.create_hero()
             self.team_one.add_hero(new_hero)
             print("-------------------")
@@ -231,6 +246,7 @@ class Arena:
     def build_team_two(self):
         team_name = input("Enter Team Two name: ")
         self.team_two = Team(team_name)
+
         while True:
             try:
                 user_choice = int(input("Enter number of heroes to add to Team Two: "))
@@ -241,7 +257,7 @@ class Arena:
 
         for i in range(user_choice, 0, -1):
             placement = user_choice - (i - 1) # Just so print out to user that makes sense numerically
-            print(f"For Team Two of hero {placement}, add the hero name and abilities.")
+            print(f"For Team Two of hero {placement}, add the hero's name and abilities.")
             new_hero = self.create_hero()
             self.team_two.add_hero(new_hero)
             print("-----------------")
