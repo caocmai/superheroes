@@ -1,5 +1,6 @@
 import random
 
+# Class that returns random attack amount for ability name and max strength
 class Ability:
     def __init__(self, name, attack_strength):
         self.name = name
@@ -8,12 +9,12 @@ class Ability:
     def attack(self):
         return random.randint(0, self.attack_strength)
 
-
+# Class that returns random attack amount that starts at least 1/2 the minimum
 class Weapon(Ability):
     def attack(self):
-        return random.randint(self.attack // 2, self.attack_strength)
+        return random.randint(self.attack_strength // 2, self.attack_strength)
 
-
+# Class that return random defense/block with max block input
 class Armor:
     def __init__(self, name, max_block):
         self.name = name
@@ -23,7 +24,7 @@ class Armor:
         return random.randint(0, self.max_block)
 
 class Hero:
-
+    # Initializes the hero class, with starting health as 100 by default
     def __init__(self, name, starting_health=100):
         self.name = name
         self.starting_health = starting_health
@@ -33,27 +34,32 @@ class Hero:
         self.deaths = 0
         self.kills = 0
 
+    # Setter function to add weapon to abilities; in this case adding object
     def add_weapon(self, weapon):
         self.abilities.append(weapon)
 
     # def add_armor(self, armor):
     #     self.abilities.append(armor)
 
-    # Add Armor object
+    # Setter function to add armor to armors; in this case adding object
     def add_armor(self, armor):
         self.armors.append(armor)
 
+    # Setter add number of kills
     def add_kill(self, num_kills):
-        self.kills = num_kills
+        self.kills += num_kills
 
+    # This is a setter add number of deaths
     def add_deaths(self, num_deaths):
-        self.deaths = num_deaths
+        self.deaths += num_deaths
 
-    # Add Ability object
+    # Add Ability object. This is a setter
     def add_ability(self, ability):
         # self.ability = ability
         self.abilities.append(ability) 
 
+    # Attack method that returns the TOTAL of all the attacks in the ability list
+    # Can use .attack() from Weapons class because the object passed in is the Weapons object
     def attack(self):
         hits = 0
         for hit in self.abilities:
@@ -61,6 +67,7 @@ class Hero:
         return hits
 
     # Why need the damage_amt? Not added in this method
+    # Exactly like the attack method above except this time it's the block method from Armor
     def defend(self):
         blocks = 0
         if not len(self.armors) == 0:
@@ -68,28 +75,32 @@ class Hero:
                 blocks += block.block()
         return blocks
 
+    # This is the meat and potatoe of this Hero class. This method updates the amount of 
+    # current health by taking the total (attack()) = (damage) and subtracting total defend()
     def take_damage(self, damage):
-        total_damage = damage - self.defend()
-        self.current_health -= total_damage
+        absolute_damge = damage - self.defend()
+        self.current_health -= absolute_damge
 
+    # Returns True if current_health is greater than 0, and reverse if less than 0
     def is_alive(self):
         return self.current_health >= 0
 
+    # Method to determine who wins when fighting each other
     def fight(self, opponent):
         while self.is_alive() and opponent.is_alive():
             self.take_damage(opponent.attack())
             opponent.take_damage(self.attack())
 
-        print(f"{self.name} current health: {self.current_health}. {opponent.name} current health: {opponent.current_health}")
+            print(f"{self.name} current health: {self.current_health}. {opponent.name} current health: {opponent.current_health}")
 
-        if self.current_health > opponent.current_health:
-            opponent.add_deaths(1)
-            self.add_kill(1)
-            print(f"{self.name} is the winner")
-        else:
-            self.add_deaths(1)
-            opponent.add_kill(1)
-            print(f"{opponent.name} is the winner")
+            if self.is_alive() and not opponent.is_alive():
+                opponent.add_deaths(1)
+                self.add_kill(1)
+                print(f"{self.name} is the winner")
+            elif not self.is_alive() and opponent.is_alive():
+                self.add_deaths(1)
+                opponent.add_kill(1)
+                print(f"{opponent.name} is the winner")
 
 
 class Team():
@@ -102,7 +113,7 @@ class Team():
         for hero in self.heroes:
             if hero.name == name:
                 self.heroes.remove(hero)
-        return 0
+        return False
 
     def view_all_heroes(self):
         for hero in self.heroes:
@@ -121,14 +132,16 @@ class Team():
 
         # Why does this not work!!!
         # while len(self.heroes) > 0 and len(other_team.heroes) > 0:
-        #     for hero in self.heroes:
-        #         if not hero.is_alive():
-        #             self.heroes.remove(hero)
 
-        #     for villian in other_team.heroes:
-        #         if not villian.is_alive():
-        #             other_team.heroes.remove(villian)
         while self.is_hero_alive() and other_team.is_hero_alive():
+            # for hero in self.heroes:
+            #     if not hero.is_alive():
+            #         self.heroes.remove(hero)
+
+            # for villian in other_team.heroes:
+            #     if not villian.is_alive():
+            #         other_team.heroes.remove(villian)
+
             one_alive_hero = random.choice(self.heroes)
             one_alive_villian = random.choice(other_team.heroes)
 
@@ -139,7 +152,7 @@ class Team():
         for hero in self.heroes:
             if hero.deaths > 0:
                 kill_ratio = hero.kills // hero.deaths
-                print(f"{hero.name} hero kill ratio is {kill_ratio}")
+                print(f"{hero.name}  kill ratio is {kill_ratio}")
             else:
                 print(f"{hero.name} hero kill ratio is {hero.kills}")
 
@@ -177,8 +190,8 @@ class Arena:
 
     def create_hero(self):
         name = input("Give your hero a name: ")
-        health = int(input("Enter the starting health of your hero: "))
-        hero = Hero(name, health)
+        health = input("Enter the starting health of your hero: ")
+        hero = Hero(name, int(health))
 
         running = True
         while running:
@@ -204,24 +217,38 @@ class Arena:
     def build_team_one(self):
         team_name = input("Enter Team One name: ")
         self.team_one = Team(team_name)
-        user_choice = int(input("Enter number of heroes to add to Team One: "))
+        while True:
+            try:
+                user_choice = int(input("Enter number of heroes to add to Team One: "))
+            except ValueError:
+                continue
+            else:
+                break
 
         for i in range(user_choice, 0, -1):
             placement = user_choice - (i - 1)
             print(f"For Team One of hero {placement}, add the hero name and abilities.")
             new_hero = self.create_hero()
             self.team_one.add_hero(new_hero)
+            print("-------------------")
 
     def build_team_two(self):
         team_name = input("Enter Team Two name: ")
         self.team_two = Team(team_name)
-        user_choice = int(input("Enter number of heroes to add to Team Two: "))
+        while True:
+            try:
+                user_choice = int(input("Enter number of heroes to add to Team Two: "))
+            except ValueError:
+                continue
+            else:
+                break
 
         for i in range(user_choice, 0, -1):
             placement = user_choice - (i - 1) # Just so print out to user makes sense numerically
             print(f"For Team Two of hero {placement}, add the hero name and abilities.")
             new_hero = self.create_hero()
             self.team_two.add_hero(new_hero)
+            print("-----------------")
 
 
     def team_battle(self):
