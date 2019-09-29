@@ -1,7 +1,10 @@
 import random
 
+
 def breakline():
-    print("---------------------------------------------------------")
+    print("------------------------------------------------------------")
+
+
 # Class that returns random attack amount for ability name and max strength
 class Ability:
     def __init__(self, name, attack_strength):
@@ -10,6 +13,7 @@ class Ability:
 
     def attack(self):
         return random.randint(0, self.attack_strength)
+
 
 # Class that returns random attack amount that starts at least 1/2 the minimum
 class Weapon(Ability):
@@ -42,9 +46,6 @@ class Hero:
     def add_weapon(self, weapon):
         self.abilities.append(weapon)
 
-    # def add_armor(self, armor):
-    #     self.abilities.append(armor)
-
     # Setter function to add armor to armors; in this case adding object
     def add_armor(self, armor):
         self.armors.append(armor)
@@ -59,7 +60,6 @@ class Hero:
 
     # Add Ability object from Ability class. This is a setter
     def add_ability(self, ability):
-        # self.ability = ability
         self.abilities.append(ability) 
 
     # Attack method that returns the TOTAL of all the attacks in the ability list
@@ -92,19 +92,29 @@ class Hero:
     # Method to determine who wins when fighting each other
     def fight(self, opponent):
         while self.is_alive() and opponent.is_alive():
-            # if not self.is_alive() and not opponent.is_alive():
-            #     continue
-            self.take_damage(opponent.attack())
-            opponent.take_damage(self.attack())
 
-            if self.is_alive() and not opponent.is_alive():
-                opponent.add_deaths(1)
-                self.add_kills(1)
-                print(f"The winner is {self.name}")
-            elif not self.is_alive() and opponent.is_alive():
+            self.take_damage(opponent.attack())
+            if self.current_health < 0:
                 self.add_deaths(1)
                 opponent.add_kills(1)
                 print(f"The winner is {opponent.name}")
+                break
+
+            opponent.take_damage(self.attack())
+            if opponent.current_health < 0:
+                opponent.add_deaths(1)
+                self.add_kills(1)
+                print(f"The winner is {self.name}")
+
+            # Logic to determin winner, must use with and
+            # if self.is_alive() and not opponent.is_alive():
+            #     opponent.add_deaths(1)
+            #     self.add_kills(1)
+            #     print(f"The winner is {self.name}")
+            # elif not self.is_alive() and opponent.is_alive():
+            #     self.add_deaths(1)
+            #     opponent.add_kills(1)
+            #     print(f"The winner is {opponent.name}")
 
 
 class Team():
@@ -136,7 +146,7 @@ class Team():
     def is_hero_alive(self):
         # Looping to make sure at least one alive hero-object in heroes list
         for hero in self.heroes:
-            # Can use is_alive becuase of again, passing in Hero class objects
+            # Can use is_alive becuase of, again, passing in Hero class objects
             if hero.is_alive():
                 return True
         return False
@@ -147,14 +157,14 @@ class Team():
             one_alive_hero = random.choice(self.heroes)
             one_alive_villian = random.choice(other_team.heroes)
 
-            # If both chosen heros current health is less than 0 skip and do the next.
+            # If both chosen heros current health is less than 0, SKIP that and do the next.
             if not one_alive_hero.is_alive() or not one_alive_villian.is_alive():
                 continue
 
             print(f"Hero: {one_alive_hero.name} is fighting Hero: {one_alive_villian.name}")
             one_alive_hero.fight(one_alive_villian)
 
-            # This is to hold all the current alive heros
+            # This is to hold all the current living heros
             alive_heros_team_one = []
             alive_heros_team_two = []
 
@@ -170,9 +180,9 @@ class Team():
               if hero.current_health > 0:
                 alive_heros_team_two.append(hero.name)
 
-            print(f"Team One named: {self.name} current alive hero(es): ")
+            print(f"Team One named: {self.name} current living hero(es): ")
             print(alive_heros_team_one)
-            print(f"Team Two named: {other_team.name} current alive hero(es): ")
+            print(f"Team Two named: {other_team.name} current living hero(es): ")
             print(alive_heros_team_two)
             breakline()
 
@@ -245,11 +255,12 @@ class Arena:
             else:
                 break
 
-        hero = Hero(name, int(health))
+        hero = Hero(name, health)
 
+        # Adds as many abilities, armors or weapons as user want
         running = True
         while running:
-            breakline()
+            breakline() # Adds a breakline to make it easier to read
             user_choice = input("Type 'a' to add ability. \nType 'r' add armor. \nType 'w' to add weapon. \nType 'q' when finished. \n>")
 
             if user_choice == 'a':
@@ -282,7 +293,8 @@ class Arena:
                 continue
             else:
                 break
-
+        
+        # Loop to create hero based on user input amount
         for i in range(user_choice, 0, -1):
             placement = user_choice - (i - 1)
             print(f"For Team One named: {self.team_one.name} of hero {placement}, add the hero's name and abilities.")
@@ -303,7 +315,8 @@ class Arena:
                 continue
             else:
                 break
-
+        
+        # Same as building team one
         for i in range(user_choice, 0, -1):
             placement = user_choice - (i - 1) # Just so print out to user that makes sense numerically
             print(f"For Team Two named: {self.team_two.name} of hero {placement}, add the hero's name and abilities.")
@@ -317,7 +330,7 @@ class Arena:
         # These are both Team objects
         self.team_one.attack(self.team_two)
 
-    # Shoes kill status of heroes
+    # Shows kill status of heroes
     def show_stats(self):
         self.team_one.stats()
         self.team_two.stats()
