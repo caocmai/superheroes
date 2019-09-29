@@ -170,9 +170,9 @@ class Team():
               if hero.current_health > 0:
                 alive_heros_team_two.append(hero.name)
 
-            print(f"Team One named: {self.name} current alive hero(s): ")
+            print(f"Team One named: {self.name} current alive hero(es): ")
             print(alive_heros_team_one)
-            print(f"Team Two named: {other_team.name} current alive heroe(s): ")
+            print(f"Team Two named: {other_team.name} current alive hero(es): ")
             print(alive_heros_team_two)
             breakline()
 
