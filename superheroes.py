@@ -1,7 +1,7 @@
 import random
 
 def breakline():
-    print("------------------------------------------------------")
+    print("---------------------------------------------------------")
 # Class that returns random attack amount for ability name and max strength
 class Ability:
     def __init__(self, name, attack_strength):
@@ -16,6 +16,7 @@ class Weapon(Ability):
     def attack(self):
         return random.randint(self.attack_strength // 2, self.attack_strength)
 
+
 # Class that return random defense/block with max block input
 class Armor:
     def __init__(self, name, max_block):
@@ -24,6 +25,7 @@ class Armor:
     
     def block(self):
         return random.randint(0, self.max_block)
+
 
 class Hero:
     # Initializes the hero class, with starting health as 100 by default
@@ -90,9 +92,8 @@ class Hero:
     # Method to determine who wins when fighting each other
     def fight(self, opponent):
         while self.is_alive() and opponent.is_alive():
-            if not self.is_alive() and not opponent.is_alive():
-                continue
-
+            # if not self.is_alive() and not opponent.is_alive():
+            #     continue
             self.take_damage(opponent.attack())
             opponent.take_damage(self.attack())
 
@@ -104,22 +105,6 @@ class Hero:
                 self.add_deaths(1)
                 opponent.add_kills(1)
                 print(f"The winner is {opponent.name}")
-
-            # print(f"{self.name} current health: {self.current_health}. {opponent.name} current health: {opponent.current_health}")
-
-            # if self.is_alive() and not opponent.is_alive():
-            #     opponent.add_deaths(1)
-            #     self.add_kills(1)
-            #     print(f"The winner is {self.name}")
-            # elif not self.is_alive() and opponent.is_alive():
-            #     self.add_deaths(1)
-            #     opponent.add_kills(1)
-            #     print(f"The winner is {opponent.name}")
-            # elif not self.is_alive() and not opponent.is_alive():
-            #     continue
-                # print("Both died")
-                # self.add_deaths(1)
-                # opponent.add_deaths(1)
 
 
 class Team():
@@ -185,9 +170,9 @@ class Team():
               if hero.current_health > 0:
                 alive_heros_team_two.append(hero.name)
 
-            print(f"Team One named: {self.name} current alive heros: ")
+            print(f"Team One named: {self.name} current alive hero(s): ")
             print(alive_heros_team_one)
-            print(f"Team Two named: {other_team.name} current alive heroes: ")
+            print(f"Team Two named: {other_team.name} current alive heroe(s): ")
             print(alive_heros_team_two)
             breakline()
 
@@ -254,7 +239,7 @@ class Arena:
         # If string then uses the except ValueError to go back
         while True:
             try:
-                health = int(input("Enter the starting health of your hero: "))
+                health = int(input(f"Enter the starting amount of health to your hero of {name}: "))
             except ValueError:
                 continue
             else:
@@ -265,7 +250,7 @@ class Arena:
         running = True
         while running:
             breakline()
-            user_choice = input("Type 'a' to add ability. \nType 'r' add armor. \nType 'w' to add weapon. \nType 'q' when finished. \n")
+            user_choice = input("Type 'a' to add ability. \nType 'r' add armor. \nType 'w' to add weapon. \nType 'q' when finished. \n>")
 
             if user_choice == 'a':
                 new_ability = self.create_ability()
